@@ -22,6 +22,7 @@ void Main()
 
 		fields.OrderBy(f => f.FieldID).Dump();
 		//session.ClientID.Dump();
+    //session.PrintTemplateHierarchy(TemplateEntry.PublicRoot);
 	}
 }
 
@@ -439,5 +440,93 @@ public class DataExchangeEvent : SessionInformationEventBase
 	public DataExchangeEvent(DataExchangeEventArgs args) : base(args.Source)
 	{
 		Data = args.Data;
+	}
+}
+
+public static class SessionExtensions
+{
+	public static string GetGuidFromLoanNumber(this Session session, string loanNumber)
+	{
+		var qry = session.Loans.Query(new StringFieldCriterion("Loan.LoanNumber", loanNumber, StringFieldMatchType.Exact, true));
+		if (!qry.OfType<LoanIdentity>().Any())
+		{
+			throw new ArgumentException($"Loan Number does not exist in {session.ServerURI}");
+		}
+		return qry.OfType<LoanIdentity>().First().Guid;
+	}
+
+	public static IEnumerable<LoanIdentity> GetGuidsFromLoanNumber(this Session session, string loanNumber)
+	{
+		var qry = session.Loans.Query(new StringFieldCriterion("Loan.LoanNumber", loanNumber, StringFieldMatchType.Exact, true));
+		if (!qry.OfType<LoanIdentity>().Any())
+		{
+			throw new ArgumentException($"Loan Number does not exist in {session.ServerURI}");
+		}
+		return qry.OfType<LoanIdentity>().ToArray();
+	}
+
+	// Allows for recursively traversing the template hierarchy
+	public static void PrintTemplateHierarchy(this Session session, TemplateEntry parent, TemplateType type = TemplateType.LoanTemplate)
+	{
+		// Retrieve the contents of the specified parent folder
+		var templateEntries = session.Loans.Templates.GetTemplateFolderContents(type, parent).OfType<TemplateEntry>();
+
+		// Iterate over each of the TemplateEntry records, each of which represents either
+		// a Template or a subfolder of the parent folder.
+		foreach (var e in templateEntries)
+		{
+			PrintTemplateEntry(e);
+
+			// If the entry represents a subfolder, recurse into that folder
+			if (e.EntryType == TemplateEntryType.Folder)
+				session.PrintTemplateHierarchy(e);
+		}
+	}
+
+	// Prints the details of a single TemplateEntry object
+	private static void PrintTemplateEntry(TemplateEntry e)
+	{
+		/*
+		Console.WriteLine("-> " + e.Name);
+		Console.WriteLine("   Type = " + e.EntryType);
+		Console.WriteLine("   IsPublic = " + e.IsPublic);
+		Console.WriteLine("   LastModified = " + e.LastModified);
+		Console.WriteLine("   Owner = " + e.Owner);
+		Console.WriteLine("   ParentFolder = " + e.ParentFolder);
+		Console.WriteLine("   Path = " + e.Path);
+		Console.WriteLine("   RepositoryPath = " + e.DomainPath);
+
+		foreach (string name in e.Properties.GetPropertyNames())
+			Console.WriteLine("   Properties[\"" + name + "\"] = " + e.Properties[name]);
+
+		Console.WriteLine();
+		*/
+		e.Dump();
+	}
+
+	public static bool IsProduction(this Session session)
+	{
+		return session.ServerURI.Contains("YourServerIdHere");
+
+	}
+
+	public static bool IsStaging(this Session session)
+	{
+		return session.ServerURI.Contains("YourServerIdHere");
+	}
+
+	public static bool IsTesting(this Session session)
+	{
+		return session.ServerURI.Contains("YourServerIdHere");
+	}
+
+	public static bool IsDevelop(this Session session)
+	{
+		return session.ServerURI.Contains("YourServerIdHere");
+	}
+
+	public static bool IsSandbox(this Session session)
+	{
+		return !(session.IsProduction() || session.IsStaging() || session.IsTesting() || session.IsDevelop());
 	}
 }
