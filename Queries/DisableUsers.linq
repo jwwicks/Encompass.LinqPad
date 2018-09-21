@@ -66,12 +66,24 @@ void Main()
 */
 public class MyUser
 {
+	[ExcelColumn("User ID")]
 	public string ID { get; set; }
+	
+	[ExcelColumn("First Name")]
 	public string FirstName { get; set; }
+	
+	[ExcelColumn("Last Name")]
 	public string LastName { get; set; }
+	
+	[ExcelColumn("Persona")]
 	public string Personas { get; set; }
+	
+	[ExcelColumn("Organization group")]
 	public string OrganizationGroup { get; set; }
+	
+	[ExcelColumn("Last Login")]
 	public string LastLogin { get; set; }
+	
 	public string Login { get; set; }
 	public string Account { get; set; }
 	public string Email { get; set; }
