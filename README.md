@@ -14,7 +14,7 @@ Once you've updated the MyExtensions file to your plugins folder you'll need to 
 Once you've edited the file try running the file. LinqPad should prompt you for password's for the environment you are trying to connect to. If not make sure you update the passwords in LinqPad's Password Manager.
 
 A typical run looks something like the following:
-[[docs/field_search_results.png|Field Search Results]]
+[[https://github.com/jwwicks/Encompass.LinqPad/blob/master/docs/field_search_results.png|Field Search Results]]
 
 ## Advanced Install
 
