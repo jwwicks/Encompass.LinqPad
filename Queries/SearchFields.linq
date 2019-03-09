@@ -11,7 +11,7 @@ void Main()
 
 	var found = Factory.SearchFields(fields).OfType<FieldDescriptor>()
 	/* Search the reporting Db for these fields instead
-	var found = Factory.SearchReportingFields(fields);
+	var found = Factory.SearchReportingFields(fields).OfType<ReportingFieldDescriptor>()
 	*/
 		/* that have Appraisal in the FieldlID */
 		.Where(f => f.FieldID.Contains("Appraisal".ToUpper()))
@@ -24,6 +24,17 @@ void Main()
 			Description = f.Description,
 			Options = f.Options
 			})
+    /* Filter for Reporting Field columns
+    .Select(f => new
+  		{
+  			FieldId = f.FieldID,
+  			Format = f.FieldType,
+  			Name = f.CanonicalName,
+  			Description = f.Description,
+  			Table = f.TableName,
+  			Column = f.ColumnName
+  	})
+    */
 		.Dump();
 
 }
