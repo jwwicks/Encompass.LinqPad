@@ -16,6 +16,28 @@ Once you've edited the file try running the file. LinqPad should prompt you for 
 A typical run looks something like the following:
 ![Field Search Results](docs/field_search_results.png)
 
+The benefits of this search are that you get to see the field values as well as the display text.
+![Field Values](docs/field_search_values_results.png)
+
+You can also display the Reporting Database fields by changing the code to look like the following:
+```
+var found = Factory.SearchReportingFields(fields).OfType<ReportingFieldDescriptior>()
+  .Where(f => f.FieldID.Contains("Appraisal".ToUpper()))
+	.OrderBy(f => f.FieldID)
+	.Select(f => new
+		{
+			FieldId = f.FieldID,
+			Format = f.FieldType,
+			Name = f.CanonicalName,
+			Description = f.Description,
+			Table = f.TableName,
+			Column = f.ColumnName
+	})
+	.Dump();
+```
+Results should look something like the following:
+![Reporting Field Search Results](docs/reporting_field_search_results.png)
+
 ## Advanced Install
 
 ## References
