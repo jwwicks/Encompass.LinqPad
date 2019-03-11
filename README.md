@@ -53,7 +53,7 @@ This scenario is typical for large shops so they can test how new Encompass vers
 7. Install the Encompass SmartClient and check your connection to the Encompass environment.
 8. Install the Encompass SDK.
 9. Install LinqPad and setup a shared folder to your projects within the VM. I use C:\Projects or I share that folder as P: drive. Whatever works for you.
-10. Point LinqPad at the code from this repo. Check you connection to Encompass again.
+10. Point LinqPad at the code from this repo. Check your connection to Encompass again.
 
 ## References
 Encompass - https://www.elliemae.com/encompass/encompass-overview
