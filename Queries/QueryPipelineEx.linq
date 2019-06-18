@@ -48,12 +48,13 @@ void Main()
 				{
 					var fields = session.Loans.SelectFields(data.LoanIdentity.Guid, new StringList(fieldIds));
 					Loan l = session.Loans.Open(data.LoanIdentity.Guid);
-
-					dto.Guid = fields[0];
-					dto.LoanNumber = fields[1];
-					dto.FundedDate = fields[2];
-					dto.Fees = l.GetFundingFees(true).OfType<FundingFee>().Where(f => f.BalanceChecked == true);
-					matched.Add(dto);
+					
+					var clone = (LoanDto)dto.Clone(); 
+					clone.Guid = fields[0];
+					clone.LoanNumber = fields[1];
+					clone.FundedDate = fields[2];
+					clone.Fees = l.GetFundingFees(true).OfType<FundingFee>().Where(f => f.BalanceChecked == true);
+					matched.Add(clone);
 					
 					l.Close();
 				}
@@ -70,7 +71,7 @@ void Main()
 	DateTime.Now.Dump("End Run");
 }
 
-public class LoanDto
+public class LoanDto : ICloneable
 {
 	public string Guid { get; set;}
 	public string LoanNumber {get; set;}
@@ -88,5 +89,10 @@ public class LoanDto
 		LoanNumber = loanNumber;
 		FundedDate = fundedDate;
 		Fees = fees;		
-	}	
+	}
+	
+	public object Clone()
+	{
+		return this.MemberwiseClone();
+	}
 }
